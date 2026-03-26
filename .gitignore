@@ -1,0 +1,26 @@
+# Environment
+.env
+.venv/
+
+# Data and outputs
+data/
+cache/
+logs/
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

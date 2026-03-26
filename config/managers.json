@@ -1,0 +1,137 @@
+{
+  "managers": [
+    {
+      "id": "ackman",
+      "name": "Bill Ackman",
+      "firm": "Pershing Square Capital Management",
+      "cik": "0001336528",
+      "weight": 1.0,
+      "twitter_handle": "BillAckman",
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["Bill Ackman", "Pershing Square"],
+      "weights": {
+        "distribution": {"weight": 0.82, "n_instances": 8},
+        "accumulation": {"weight": 0.75, "n_instances": 10},
+        "contrarian": {"weight": 0.70, "n_instances": 5}
+      }
+    },
+    {
+      "id": "burry",
+      "name": "Michael Burry",
+      "firm": "Scion Asset Management",
+      "cik": "0001649339",
+      "weight": 0.9,
+      "twitter_handle": "michaeljburry",
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["Michael Burry", "Scion Asset Management"],
+      "weights": {
+        "distribution": {"weight": 0.78, "n_instances": 7},
+        "accumulation": {"weight": 0.72, "n_instances": 9},
+        "contrarian": {"weight": 0.85, "n_instances": 6}
+      }
+    },
+    {
+      "id": "einhorn",
+      "name": "David Einhorn",
+      "firm": "Greenlight Capital",
+      "cik": "0001079114",
+      "weight": 0.85,
+      "twitter_handle": null,
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["David Einhorn", "Greenlight Capital"],
+      "weights": {
+        "distribution": {"weight": 0.80, "n_instances": 12},
+        "accumulation": {"weight": 0.68, "n_instances": 9},
+        "contrarian": {"weight": 0.75, "n_instances": 8}
+      }
+    },
+    {
+      "id": "druckenmiller",
+      "name": "Stanley Druckenmiller",
+      "firm": "Duquesne Family Office",
+      "cik": "0001536411",
+      "weight": 1.0,
+      "twitter_handle": null,
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["Stanley Druckenmiller", "Duquesne Family Office"],
+      "weights": {
+        "distribution": {"weight": 0.88, "n_instances": 15},
+        "accumulation": {"weight": 0.82, "n_instances": 14},
+        "contrarian": {"weight": 0.79, "n_instances": 10}
+      }
+    },
+    {
+      "id": "loeb",
+      "name": "Daniel Loeb",
+      "firm": "Third Point",
+      "cik": "0001040273",
+      "weight": 0.85,
+      "twitter_handle": null,
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["Daniel Loeb", "Third Point"],
+      "weights": {
+        "distribution": {"weight": 0.76, "n_instances": 11},
+        "accumulation": {"weight": 0.70, "n_instances": 8},
+        "contrarian": {"weight": 0.65, "n_instances": 6}
+      }
+    },
+    {
+      "id": "icahn",
+      "name": "Carl Icahn",
+      "firm": "Icahn Capital Management",
+      "cik": "0000813672",
+      "weight": 0.8,
+      "twitter_handle": "Carl_C_Icahn",
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["Carl Icahn", "Icahn Capital"],
+      "weights": {
+        "distribution": {"weight": 0.74, "n_instances": 13},
+        "accumulation": {"weight": 0.69, "n_instances": 10},
+        "contrarian": {"weight": 0.72, "n_instances": 9}
+      }
+    },
+    {
+      "id": "tepper",
+      "name": "David Tepper",
+      "firm": "Appaloosa Management",
+      "cik": "0001656456",
+      "weight": 0.9,
+      "twitter_handle": null,
+      "youtube_channels": [],
+      "podcast_rss": [],
+      "news_queries": ["David Tepper", "Appaloosa Management"],
+      "weights": {
+        "distribution": {"weight": 0.45, "n_instances": 7},
+        "accumulation": {"weight": 0.60, "n_instances": 8},
+        "contrarian": {"weight": 0.55, "n_instances": 5}
+      }
+    },
+    {
+      "id": "marks",
+      "name": "Howard Marks",
+      "firm": "Oaktree Capital Management",
+      "cik": "0001061165",
+      "weight": 0.85,
+      "twitter_handle": null,
+      "youtube_channels": [
+        "https://www.youtube.com/@OaktreeCapital"
+      ],
+      "podcast_rss": [
+        "https://rss.art19.com/the-memo-by-howard-marks",
+        "https://rss.art19.com/the-insight"
+      ],
+      "news_queries": ["Howard Marks", "Oaktree Capital"],
+      "weights": {
+        "distribution": {"weight": 0.77, "n_instances": 10},
+        "accumulation": {"weight": 0.65, "n_instances": 8},
+        "contrarian": {"weight": 0.60, "n_instances": 7}
+      }
+    }
+  ]
+}
