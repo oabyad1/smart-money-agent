@@ -78,6 +78,11 @@ def fetch_news_newsapi(manager_name: str, since: str, until: str) -> list[dict]:
         logger.warning("No NEWSAPI_KEY set, skipping NewsAPI")
         return []
 
+    # Enforce minimum 7-day lookback for sufficient article volume
+    seven_days_ago = (date.today() - timedelta(days=7)).isoformat()
+    if since > seven_days_ago:
+        since = seven_days_ago
+
     articles = []
     params = {
         "q": f'"{manager_name}"',
@@ -169,23 +174,24 @@ def fetch_and_store_news(manager: dict, since: str = None, until: str = None) ->
         # Fetch full article text
         full_text = fetch_article_text(url)
 
+        # Post-fetch relevance filter: skip if manager name not in article body.
+        # Polygon free tier ignores the q parameter; this ensures only relevant articles pass.
+        # Applied to both Polygon and NewsAPI results.
+        if not full_text or manager_name.lower() not in full_text.lower():
+            continue
+
         # Build combined text: title + description + full body
         title = article.get("title", "")
         description = article.get("description", "")
-
-        if full_text:
-            combined = f"{title}\n\n{description}\n\n{full_text}"
-        else:
-            combined = f"{title}\n\n{description}"
+        combined = f"{title}\n\n{description}\n\n{full_text}"
 
         # Filter: skip articles with insufficient content
         if len(combined) < 200:
             logger.debug("Skipping article (content too short, %d chars): %s", len(combined), title)
             continue
 
-        # Filter: only store if the manager's name appears in the content
-        if manager_name.lower() not in combined.lower():
-            logger.debug("Skipping article (manager name not found): %s", title)
+        # Pre-storage guard: manager name must appear in title or body (silent discard)
+        if manager_name.lower() not in title.lower() and manager_name.lower() not in full_text.lower():
             continue
 
         availability_date = article.get("published_at", until)
@@ -209,19 +215,39 @@ def fetch_and_store_news(manager: dict, since: str = None, until: str = None) ->
 
 if __name__ == "__main__":
     import logging
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(message)s")
 
     init_db()
     managers = load_managers()
     ackman = next(m for m in managers if m["id"] == "ackman")
+    manager_name = ackman["name"]
 
     since = (date.today() - timedelta(days=7)).isoformat()
     until = date.today().isoformat()
 
-    count = fetch_and_store_news(ackman, since=since, until=until)
-    print(f"\nStored {count} new articles for Bill Ackman")
+    # --- Relevance filter verification ---
+    print(f"Fetching raw articles for {manager_name} ({since} to {until}) ...")
+    raw_newsapi = fetch_news_newsapi(manager_name, since, until)
+    raw_polygon = fetch_news_polygon(manager_name, since, until)
+    all_raw = raw_newsapi + raw_polygon
+    total_returned = len(all_raw)
 
-    # Print headlines
+    name_lower = manager_name.lower()
+    mentions_in_title_or_desc = sum(
+        1 for a in all_raw
+        if name_lower in (a.get("title", "") + " " + a.get("description", "")).lower()
+    )
+    print(f"\nFilter check (title/description only, before full-text fetch):")
+    print(f"  Total articles returned by APIs : {total_returned}")
+    print(f"  Articles mentioning '{manager_name}' in title/desc: {mentions_in_title_or_desc}")
+    print(f"  Irrelevant (no mention in title/desc): {total_returned - mentions_in_title_or_desc}")
+
+    # --- Full pipeline ---
+    print(f"\nRunning full pipeline (fetches body text, applies relevance filter, stores) ...")
+    count = fetch_and_store_news(ackman, since=since, until=until)
+    print(f"Stored {count} new articles for {manager_name}")
+
+    # Print recent headlines from DB
     with get_connection() as conn:
         rows = conn.execute("""
             SELECT url, availability_date, substr(raw_text, 1, 120) as headline
@@ -231,6 +257,6 @@ if __name__ == "__main__":
             LIMIT 10
         """).fetchall()
 
-    print("\nRecent news articles:")
+    print("\nRecent news articles in DB:")
     for row in rows:
         print(f"  [{row['availability_date']}] {row['headline'][:100]}")
