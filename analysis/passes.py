@@ -14,14 +14,27 @@ from analysis.prompts import (
 
 logger = logging.getLogger(__name__)
 
-MODEL = "claude-sonnet-4-6"
+HAIKU = "claude-haiku-4-5-20251001"
+SONNET = "claude-sonnet-4-6"
 MAX_TOKENS = 2000
 
+# Passes 1-4 are mechanical extraction/classification → cheap Haiku.
+# Passes 5-6 require cross-referencing and adversarial reasoning → Sonnet.
+_PASS_MODEL = {
+    1: HAIKU,
+    2: HAIKU,
+    3: HAIKU,
+    4: HAIKU,
+    5: SONNET,
+    6: SONNET,
+}
 
-def _call_claude(client: anthropic.Anthropic, prompt: str, pass_num: int) -> str:
+
+def _call_claude(client: anthropic.Anthropic, prompt: str, pass_num: int,
+                 model: str | None = None) -> str:
     """Call Claude API and return the text response."""
     message = client.messages.create(
-        model=MODEL,
+        model=model or _PASS_MODEL.get(pass_num, SONNET),
         max_tokens=MAX_TOKENS,
         temperature=0,
         messages=[{"role": "user", "content": prompt}],
@@ -46,7 +59,7 @@ def _parse_json_response(raw: str, pass_num: int, client: anthropic.Anthropic) -
             f"Your previous response was not valid JSON. "
             f"Return only the JSON with no other text.\n\n{raw}"
         )
-        retry_raw = _call_claude(client, retry_prompt, pass_num)
+        retry_raw = _call_claude(client, retry_prompt, pass_num, model=HAIKU)
         retry_text = retry_raw.strip()
         if retry_text.startswith("```"):
             lines = retry_text.splitlines()
