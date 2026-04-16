@@ -20,7 +20,6 @@ build/
 .idea/
 .vscode/
 *.iml
-
 # OS
 .DS_Store
 Thumbs.db
